@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Pets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            background-image: url('cachorro.jpeg'); /* Substitua pelo caminho da sua imagem */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: flex-start; /* Alinha o contêiner à esquerda */
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding-left: 20px; /* Adiciona um pouco de espaço à esquerda */
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 1s ease-in;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 28px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .button-container button {
+            flex: 1;
+            margin: 0 5px; /* Espaçamento entre os botões */
+        }
+        .hidden {
+            display: none;
+        }
+        .feedback {
+            color: #ff0000;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .feedback.valid {
+            color: #28a745;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal-content h2 {
+            margin-top: 0;
+        }
+        .modal-content button {
+            margin-top: 10px;
+            background-color: #28a745;
+        }
+        .modal-content button.close {
+            background-color: #dc3545;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cadastro de Pets</h1>
+        <form id="pet-form">
+            <div class="feedback" id="feedback-message"></div>
+            
+            <label for="pet-name">Nome do Pet:</label>
+            <input type="text" id="pet-name" name="pet-name" required>
+            <div id="pet-name-error" class="feedback hidden"></div>
+            
+            <label for="animal-type">Tipo de Animal:</label>
+            <select id="animal-type" name="animal-type" onchange="toggleOtherField()" required>
+                <option value="">Selecione...</option>
+                <option value="cachorro">Cachorro</option>
+                <option value="gato">Gato</option>
+                <option value="passaro">Pássaro</option>
+                <option value="outro">Outro</option>
+            </select>
+            <div id="animal-type-error" class="feedback hidden"></div>
+            
+            <div id="other-animal-container" class="hidden">
+                <label for="other-animal">Especifique o Tipo de Animal:</label>
+                <input type="text" id="other-animal" name="other-animal">
+            </div>
+            
+            <label for="pet-age">Idade do Pet (em anos):</label>
+            <input type="number" id="pet-age" name="pet-age" min="0" required>
+            <div id="pet-age-error" class="feedback hidden"></div>
+            
+            <label for="owner-name">Nome do Dono:</label>
+            <input type="text" id="owner-name" name="owner-name" required>
+            <div id="owner-name-error" class="feedback hidden"></div>
+            
+            <div class="button-container">
+                <button type="submit">Cadastrar</button>
+                <button type="reset">Resetar</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Prévia dos Dados</h2>
+            <p id="preview-text"></p>
+            <button id="confirm-button">Confirmar</button>
+            <button class="close" onclick="hideModal()">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleOtherField() {
+            var select = document.getElementById('animal-type');
+            var otherContainer = document.getElementById('other-animal-container');
+            if (select.value === 'outro') {
+                otherContainer.classList.remove('hidden');
+            } else {
+                otherContainer.classList.add('hidden');
+            }
+        }
+
+        function showModal() {
+            var modal = document.getElementById('modal');
+            var previewText = document.getElementById('preview-text');
+            var petName = document.getElementById('pet-name').value;
+            var animalType = document.getElementById('animal-type').value;
+            var otherAnimal = document.getElementById('other-animal').value;
+            var petAge = document.getElementById('pet-age').value;
+            var ownerName = document.getElementById('owner-name').value;
+
+            if (animalType === 'outro' && otherAnimal) {
+                animalType = otherAnimal;
+            }
+
+            previewText.textContent = `Nome do Pet: ${petName}\nTipo de Animal: ${animalType}\nIdade do Pet: ${petAge} anos\nNome do Dono: ${ownerName}`;
+            modal.style.display = 'flex';
+        }
+
+        function hideModal() {
+            var modal = document.getElementById('modal');
+            modal.style.display = 'none';
+        }
+
+        document.getElementById('pet-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent actual form submission for demo purposes
+            
+            var petName = document.getElementById('pet-name').value;
+            var animalType = document.getElementById('animal-type').value;
+            var petAge = document.getElementById('pet-age').value;
+            var ownerName = document.getElementById('owner-name').value;
+
+            var valid = true;
+
+            // Clear previous error messages
+            document.querySelectorAll('.feedback').forEach(el => el.classList.add('hidden'));
+
+            if (!petName) {
+                document.getElementById('pet-name-error').textContent = 'Nome do pet é obrigatório.';
+                document.getElementById('pet-name-error').classList.remove('hidden');
+                valid = false;
+            }
+            if (!animalType) {
+                document.getElementById('animal-type-error').textContent = 'Tipo de animal é obrigatório.';
+                document.getElementById('animal-type-error').classList.remove('hidden');
+                valid = false;
+            }
+            if (!petAge) {
+                document.getElementById('pet-age-error').textContent = 'Idade do pet é obrigatória.';
+                document.getElementById('pet-age-error').classList.remove('hidden');
+                valid = false;
+            }
+            if (!ownerName) {
+                document.getElementById('owner-name-error').textContent = 'Nome do dono é obrigatório.';
+                document.getElementById('owner-name-error').classList.remove('hidden');
+                valid = false;
+            }
+
+            if (valid) {
+                // Show modal with data preview
+                showModal();
+            }
+        });
+
+        document.getElementById('confirm-button').addEventListener('click', function() {
+            var modal = document.getElementById('modal');
+            modal.style.display = 'none';
+            alert('Pet cadastrado com sucesso!');
+            document.getElementById('pet-form').reset(); // Reset form after success
+        });
+    </script>
+</body>
+</html>
