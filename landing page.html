@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>João Vitor Rosera - Landing Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9; /* Light background */
+            color: #333; /* Dark text */
+        }
+        .header-bg {
+            background-color: #6c63ff; /* Soft purple */
+            color: #ffffff; /* White text */
+            padding: 60px 0;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .footer-bg {
+            background-color: #343a40; /* Dark gray */
+            color: #ffffff; /* White text */
+            padding: 20px 0;
+            text-align: center;
+            border-top: 2px solid #6c63ff; /* Soft purple border */
+        }
+        .form-section {
+            padding: 40px 0;
+        }
+        .course-card {
+            margin: 30px 0; /* Espaçamento maior entre os cards */
+            border-radius: 20px; /* Arredondar mais os cards */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            background-color: #ffffff; /* White card background */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        .card-header {
+            background-color: #6c63ff; /* Soft purple */
+            color: #ffffff; /* White text */
+            border-bottom: 2px solid #6c63ff; /* Soft purple border */
+            border-radius: 20px 20px 0 0; /* Arredondar a parte superior */
+            padding: 15px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .btn-outline-primary {
+            border-color: #6c63ff; /* Soft purple */
+            color: #6c63ff; /* Soft purple */
+        }
+        .btn-outline-primary:hover {
+            background-color: #6c63ff; /* Soft purple */
+            color: #ffffff; /* White text */
+        }
+        .qr-container, .credit-card-info, .boleto-info {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+        }
+        .qr-container h3, .credit-card-info h3 {
+            margin-bottom: 20px;
+            color: #6c63ff; /* Soft purple */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        function processPayment() {
+            const paymentMethod = document.getElementById("pagamento").value;
+            document.getElementById("qr-container").style.display = "none";
+            document.getElementById("boleto-container").style.display = "none";
+            document.getElementById("credit-card-info").style.display = "none";
+
+            if (paymentMethod === "pix") {
+                document.getElementById("qr-container").style.display = "block";
+                const qrcode = new QRCode(document.getElementById("qrcode"), {
+                    text: "https://www.exemplo.com/pagamento/pix", // URL do pagamento
+                    width: 128,
+                    height: 128,
+                });
+            } else if (paymentMethod === "boleto") {
+                document.getElementById("boleto-container").style.display = "block";
+            } else if (paymentMethod === "cartao") {
+                document.getElementById("credit-card-info").style.display = "block";
+            }
+        }
+
+        function copyQRCode() {
+            const qrCodeText = "https://www.exemplo.com/pagamento/pix"; // Texto do QR Code
+            navigator.clipboard.writeText(qrCodeText).then(() => {
+                alert("Código QR copiado para a área de transferência!");
+            });
+        }
+    </script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header-bg animate__animated animate__fadeInDown">
+        <div class="container">
+            <h1 class="display-4">Bem-vindo aos Cursos!</h1>
+            <p class="lead">Cursos incríveis para transformar sua vida!</p>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main>
+        <div class="container form-section">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <div class="card animate__animated animate__zoomIn">
+                        <div class="card-header">
+                            <h2>Inscreva-se Agora!</h2>
+                        </div>
+                        <div class="card-body">
+                            <form id="registration-form">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="nome" class="form-label">Nome</label>
+                                        <input type="text" class="form-control" id="nome" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="sobrenome" class="form-label">Sobrenome</label>
+                                        <input type="text" class="form-control" id="sobrenome" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="endereco" class="form-label">Endereço Completo</label>
+                                    <input type="text" class="form-control" id="endereco" required>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="cep" class="form-label">CEP</label>
+                                        <input type="text" class="form-control" id="cep" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="email" class="form-label">E-mail</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="usuario" class="form-label">Usuário</label>
+                                        <input type="text" class="form-control" id="usuario" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="senha" class="form-label">Senha</label>
+                                        <input type="password" class="form-control" id="senha" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="curso" class="form-label">Curso</label>
+                                        <select class="form-select" id="curso" required>
+                                            <option value="">Selecione um curso</option>
+                                            <option value="curso1">Curso de Programação Web</option>
+                                            <option value="curso2">Curso de Marketing Digital</option>
+                                            <option value="curso3">Curso de Design Gráfico</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="estado" class="form-label">Estado</label>
+                                        <input type="text" class="form-control" id="estado" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="pagamento" class="form-label">Forma de Pagamento</label>
+                                        <select class="form-select" id="pagamento" onchange="processPayment()" required>
+                                            <option value="">Selecione uma forma</option>
+                                            <option value="pix">Pix</option>
+                                            <option value="boleto">Boleto</option>
+                                            <option value="cartao">Cartão de Crédito</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- QR Code Info -->
+                                <div id="qr-container" class="qr-container text-center">
+                                    <h3>Pagamento via Pix</h3>
+                                    <p>Escaneie o QR Code abaixo para realizar o pagamento:</p>
+                                    <div id="qrcode" style="margin: 0 auto;"></div>
+                                    <button class="btn btn-secondary mt-3" onclick="copyQRCode()">Copiar Código</button>
+                                </div>
+
+                                <!-- Boleto Info -->
+                                <div id="boleto-container" class="boleto-info">
+                                    <h3>Pagamento via Boleto</h3>
+                                    <p>Instruções para pagamento do boleto serão enviadas para o seu e-mail.</p>
+                                </div>
+
+                                <!-- Credit Card Info -->
+                                <div id="credit-card-info" class="credit-card-info">
+                                    <h3>Pagamento com Cartão de Crédito</h3>
+                                    <p>Insira as informações do cartão abaixo:</p>
+                                    <input type="text" class="form-control mb-2" placeholder="Número do Cartão" required>
+                                    <input type="text" class="form-control mb-2" placeholder="Nome no Cartão" required>
+                                    <input type="text" class="form-control mb-2" placeholder="Data de Validade (MM/AA)" required>
+                                    <input type="text" class="form-control mb-2" placeholder="Código de Segurança" required>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary mt-3 animate__animated animate__bounce">Enviar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Cards -->
+            <div class="row mt-5"> <!-- Adicionando margem no topo -->
+                <div class="col-md-4">
+                    <div class="course-card animate__animated animate__fadeInLeft">
+                        <div class="card-header">
+                            <h5>Curso de Programação Web</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Aprenda a desenvolver sites e aplicações web do zero, utilizando HTML, CSS e JavaScript. Ideal para iniciantes e profissionais que desejam atualizar suas habilidades.</p>
+                            <button class="btn btn-outline-primary">Saiba Mais</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="course-card animate__animated animate__fadeInUp">
+                        <div class="card-header">
+                            <h5>Curso de Marketing Digital</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Domine as técnicas de marketing digital para promover produtos e serviços online. Aprenda sobre SEO, redes sociais, e estratégias de conteúdo para aumentar suas vendas.</p>
+                            <button class="btn btn-outline-primary">Saiba Mais</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="course-card animate__animated animate__fadeInRight">
+                        <div class="card-header">
+                            <h5>Curso de Design Gráfico</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Desenvolva suas habilidades de design gráfico utilizando ferramentas como Photoshop e Illustrator. Aprenda a criar visuais impactantes para diversos tipos de mídia.</p>
+                            <button class="btn btn-outline-primary">Saiba Mais</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-bg">
+        <div class="container">
+            <p>&copy; 2024 João Vitor Rosera. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-d88bJ8CkQkjmR+OSyIEPL8v0DA0H0S8Wb9R4g4ZeyH5D3JbRAEBRLeFsxYuxMBR2" crossorigin="anonymous"></script>
+</body>
+</html>
